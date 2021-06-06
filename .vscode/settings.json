@@ -14,7 +14,8 @@
     "qqmlapplicationengine": "cpp",
     "qquickwindow": "cpp",
     "qguiapplication": "cpp",
-    "qquickitem": "cpp"
+    "qquickitem": "cpp",
+    "functional": "cpp"
   },
   "cmake.configureOnOpen": false,
   "cmake.configureOnEdit": false,

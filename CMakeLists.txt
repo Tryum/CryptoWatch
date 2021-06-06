@@ -20,6 +20,7 @@ message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR}QuickCompiler)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS NetworkAuth)
 message(STATUS "QT_FOUND ${QT_FOUND}")
 message(STATUS "QT_CONFIG ${QT_CONFIG}")
 message(STATUS "QT_CONSIDERED_CONFIGS ${QT_CONSIDERED_CONFIGS}")
@@ -48,6 +49,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libssl.so)
 #    endif()
 #endif()
+
+add_compile_definitions(COINBASE_CLIENT_ID="$ENV{COINBASE_CLIENT_ID}")
+add_compile_definitions(COINBASE_CLIENT_SECRET="$ENV{COINBASE_CLIENT_SECRET}")
 
 file(GLOB_RECURSE SRC_LIST RELATIVE ${CMAKE_SOURCE_DIR}
     "src/*.cpp"
@@ -86,7 +90,15 @@ target_link_libraries(${PROJECT}
 
 
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
+find_package(OpenSSL REQUIRED)
+
+message(STATUS "OPENSSL_CRYPTO_LIBRARY : ${OPENSSL_CRYPTO_LIBRARY}")
+
 target_link_libraries(${PROJECT} PRIVATE unofficial::sqlite3::sqlite3)
+
+target_link_libraries(${PROJECT} PRIVATE Qt${QT_VERSION_MAJOR}::NetworkAuth)
+
+target_link_libraries(${PROJECT} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
 target_include_directories(${PROJECT}
     PRIVATE
