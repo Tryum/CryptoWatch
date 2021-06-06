@@ -1,6 +1,8 @@
-# vscode-qt-qml-vcpkg-template
+# Crypto Watch 
 
-[![Windows Build](https://github.com/upupming/vscode-qt-qml-vcpkg-template/actions/workflows/windows.yml/badge.svg)](https://github.com/upupming/vscode-qt-qml-vcpkg-template/actions/workflows/windows.yml)
+## based on vscode-qt-qml-vcpkg-template
+
+[![Windows Build](https://github.com//Tryum/CryptoWatch/actions/workflows/windows.yml/badge.svg)](https://github.com//Tryum/CryptoWatch/actions/workflows/windows.yml)
 
 We use the manifest mode `vcpkg.json` to declare dependencies, just like `package.json` for npm. Clone the repo with vcpkg submodules using:
 
