@@ -115,8 +115,8 @@ jobs:
         env:
           CC: cl.exe
           CXX: cl.exe
-          COINBASE_CLIENT_ID: {{ secrets.COINBASE_CLIENT_ID }}
-          COINBASE_CLIENT_SECRET: {{ secrets.COINBASE_CLIENT_SECRET }}
+          COINBASE_CLIENT_ID: ${{ secrets.COINBASE_CLIENT_ID }}
+          COINBASE_CLIENT_SECRET: ${{ secrets.COINBASE_CLIENT_SECRET }}
         # https://stackoverflow.com/questions/31262342/cmake-g-ninja-on-windows-specify-x64?rq=1
         run: |
           Get-PsDrive
