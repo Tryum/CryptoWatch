@@ -100,6 +100,13 @@ target_link_libraries(${PROJECT} PRIVATE Qt${QT_VERSION_MAJOR}::NetworkAuth)
 
 target_link_libraries(${PROJECT} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
+add_custom_command(TARGET ${PROJECT} POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                   ${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x64-windows/bin/libcrypto-1_1-x64.dll
+                   ${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x64-windows/bin/libssl-1_1-x64.dll
+                    $<TARGET_FILE_DIR:${PROJECT}>
+                   )
+
 target_include_directories(${PROJECT}
     PRIVATE
     ${header_dir_list})
