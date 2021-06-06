@@ -102,6 +102,7 @@ jobs:
           version: ${{ matrix.qt_version }}
           arch: ${{ matrix.qtarch }}
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          modules: 'qtcharts qtnetworkauth'
       # =========================================================================================================
       - name: Win-${{ matrix.arch }} - ${{ matrix.qt_version }} - Setup Ninja
         if: matrix.platform == 'windows-latest'
