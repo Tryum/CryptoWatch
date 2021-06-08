@@ -9,8 +9,10 @@ class CoinbaseNetworkAccessManager;
 class CoinbasePrivate : public QObject {
     Q_OBJECT
 public:
-    CoinbasePrivate(QObject* parent);
+    CoinbasePrivate(QString refreshToken, QObject* parent);
     ~CoinbasePrivate();
+
+    QString refreshToken() const;
 
 public slots:
     void grant();

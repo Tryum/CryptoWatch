@@ -2,9 +2,9 @@
 
 #include "coinbaseprivate.h"
 
-Coinbase::Coinbase(QObject* parent)
+Coinbase::Coinbase(QString refreshToken, QObject* parent)
     : QObject(parent)
-    , coinbasePrivate(new CoinbasePrivate(this))
+    , coinbasePrivate(new CoinbasePrivate(refreshToken, this))
 {
     QObject::connect(coinbasePrivate, &CoinbasePrivate::onAccessGranted, this, &Coinbase::onAccessGranted);
     QObject::connect(coinbasePrivate, &CoinbasePrivate::onAccounts, this, &Coinbase::onAccounts);
@@ -24,5 +24,9 @@ void Coinbase::getAccounts() const{
 
 void Coinbase::getCurrencies() const{
     coinbasePrivate->getCurrencies();
+}
+
+QString Coinbase::refreshToken() const{
+    return coinbasePrivate->refreshToken();
 }
 

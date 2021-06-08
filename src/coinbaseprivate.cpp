@@ -16,6 +16,7 @@
 #include <QNetworkRequest>
 
 #define ENABLE_API_RESPONSE_DUMP 1
+#define VERBOSE 1
 
 constexpr auto clientId = COINBASE_CLIENT_ID;
 constexpr auto clientSecret = COINBASE_CLIENT_SECRET;
@@ -39,7 +40,7 @@ protected:
 };
 
 
-CoinbasePrivate::CoinbasePrivate(QObject *parent)
+CoinbasePrivate::CoinbasePrivate(QString refreshToken, QObject *parent)
     : QObject(parent)
     , networkManager(new CoinbaseNetworkAccessManager(this))
     , coinbase(new QOAuth2AuthorizationCodeFlow(networkManager, this))
@@ -53,6 +54,7 @@ CoinbasePrivate::CoinbasePrivate(QObject *parent)
     coinbase->setClientIdentifier(clientId);
     coinbase->setAccessTokenUrl(QUrl(tokenUrl));
     coinbase->setClientIdentifierSharedKey(clientSecret);
+    coinbase->setRefreshToken(refreshToken);
 
     const auto port = static_cast<quint16>(QUrl(redirectUri).port());
 
@@ -67,9 +69,21 @@ CoinbasePrivate::CoinbasePrivate(QObject *parent)
     });
 
     QObject::connect(coinbase, &QOAuth2AuthorizationCodeFlow::granted, this, &CoinbasePrivate::onAccessGranted);
+
+    coinbase->refreshAccessToken();
+    
+#if VERBOSE
+    QObject::connect(coinbase, &QOAuth2AuthorizationCodeFlow::expirationAtChanged, [&](){
+        qDebug() << QString("QOAuth2AuthorizationCodeFlow::expirationAtChanged -> ") + coinbase->expirationAt().toString();
+    });
+#endif
 }
 
 CoinbasePrivate::~CoinbasePrivate(){
+}
+
+QString CoinbasePrivate::refreshToken() const{
+    return coinbase->refreshToken();
 }
 
 void CoinbasePrivate::grant(){

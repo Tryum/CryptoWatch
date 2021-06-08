@@ -8,8 +8,11 @@
 #include <QVariantMap>
 #include <QQmlContext>
 #include <QTimer>
+#include <QSettings>
 
 #include "coinbase.h"
+
+constexpr auto SETTINGS_COINBASE_REFRESH_TOKEN = "coinbase/refreshToken";
 
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
@@ -17,6 +20,8 @@ int main(int argc, char *argv[]) {
     app.setOrganizationName("Tib's Lab");
     app.setOrganizationDomain("tibslab.com");
     app.setApplicationName("Crypto Watch");
+
+    QSettings settings;
     
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -49,7 +54,9 @@ int main(int argc, char *argv[]) {
     qDebug() << QSslSocket::supportsSsl();
     qDebug() << QSslSocket::sslLibraryVersionString();
 
-    Coinbase coinbase;
+    QString refreshToken = settings.value(SETTINGS_COINBASE_REFRESH_TOKEN).toString();
+    qDebug() << "using coinbase refresh token " << refreshToken;
+    Coinbase coinbase(refreshToken);
 
     QVariantMap balances;
     QVariantMap currencies;
@@ -90,14 +97,24 @@ int main(int argc, char *argv[]) {
     QTimer *balanceTimer = new QTimer(&app);
     QObject::connect(balanceTimer, &QTimer::timeout, &coinbase, &Coinbase::getAccounts);
 
+    QTimer *coinbaseGrant = new QTimer(&app);
+    QObject::connect(coinbaseGrant, &QTimer::timeout, [&](){
+        coinbase.grant();
+    });
+    coinbaseGrant->start(refreshToken.isEmpty() ? 0 : 3000);
+
     QObject::connect(&coinbase, &Coinbase::onAccessGranted, [&](){
         coinbase.getAccounts();
         coinbase.getCurrencies();
         balanceTimer->start(300000);
         currencyTimer->start(60000);
+        auto refreshToken = coinbase.refreshToken();
+        qDebug() << "Coinbase refresh token : " << refreshToken;
+        settings.setValue(SETTINGS_COINBASE_REFRESH_TOKEN, refreshToken);
+        coinbaseGrant->stop();
     });
 
-    coinbase.grant();
+    
 
     return app.exec();
 }

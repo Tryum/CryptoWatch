@@ -9,13 +9,15 @@ class Coinbase : public QObject
 {
     Q_OBJECT
 public:
-    Coinbase(QObject* parent = nullptr);
+    Coinbase(QString refreshToken = "", QObject* parent = nullptr);
     ~Coinbase();
 
 public slots:
     void grant() const;
     void getCurrencies() const ;
     void getAccounts() const;
+
+    QString refreshToken() const;
 
 signals:
     void onAccessGranted();
