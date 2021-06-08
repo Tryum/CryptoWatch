@@ -165,17 +165,17 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-exe
-          path: ${{ env.buildDir }}/${{ env.name }}.exe
+          path: ${{ env.buildDir }}/bin/${{ env.name }}.exe
       - name: Win-${{ matrix.arch }} - ${{ matrix.qt_version }} - uploading artifact (only the setup)
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-setup
-          path: ${{ env.buildDir }}/innosetup/crypto-watch-setup.exe
+          path: ${{ env.src }}/innosetup/crypto-watch-setup.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ${{ env.buildDir }}/innosetup/crypto-watch-setup.exe
+            ${{ env.src }}/innosetup/crypto-watch-setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
