@@ -12,7 +12,7 @@ env:
   GITHUB_WORKSPACE: C:/crypto-watch
   BUILD_SOURCESDIRECTORY: C:/crypto-watch
   srcDir: C:/crypto-watch
-  buildDir: C:/crypto-watch/build
+  buildDir: C:/crypto-watch/build-release
 
 jobs:
   check_commit_msg:
@@ -123,8 +123,8 @@ jobs:
           Get-PsDrive
           cmake -S ${{ env.srcDir }} -B ${{ env.buildDir }} -GNinja -DCMAKE_BUILD_TYPE=Release
           cmake --build ${{ env.buildDir }} --target all --parallel $(nproc)
-          cd ${{ env.buildDir }}
-          windeployqt.exe --release --qmldir .. ./${{ env.name }}.exe
+          windeployqt.exe --release --qmldir .. --no-system-d3d-compiler --no-compiler-runtime --no-angle --no-opengl-sw ./${{ env.buildDir }}/${{ env.name }}.exe
+          'C:/Program Files (x86)/Inno Setup 6/ISCC.exe' ./crypto-watch.iss
           Get-PsDrive
 
       - name: Set outputs
@@ -162,23 +162,16 @@ jobs:
         with:
           name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-exe
           path: ${{ env.buildDir }}/${{ env.name }}.exe
+      - name: Win-${{ matrix.arch }} - ${{ matrix.qt_version }} - uploading artifact (only the setup)
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-setup
+          path: ${{ env.buildDir }}/innosetup/crypto-watch-setup.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ${{ env.buildDir }}
-            !${{ env.buildDir }}/.cmake
-            !${{ env.buildDir }}/CMakeFiles
-            !${{ env.buildDir }}/cmake_install.cmake
-            !${{ env.buildDir }}/CMakeCache.txt
-            !${{ env.buildDir }}/.ninja_deps
-            !${{ env.buildDir }}/.ninja_log
-            !${{ env.buildDir }}/build.ninja
-            !${{ env.buildDir }}/**/*autogen*
-            !${{ env.buildDir }}/vcpkg_installed
-            !${{ env.buildDir }}/**/*.log
-            !${{ env.buildDir }}/*.manifest
-            !${{ env.buildDir }}/compile_commands.json
+            ${{ env.buildDir }}/innosetup/crypto-watch-setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
