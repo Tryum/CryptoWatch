@@ -170,12 +170,12 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-setup
-          path: ${{ env.src }}/innosetup/crypto-watch-setup.exe
+          path: ${{ env.srcDir }}/innosetup/crypto-watch-setup.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ${{ env.src }}/innosetup/crypto-watch-setup.exe
+            ${{ env.srcDir }}/innosetup/crypto-watch-setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
