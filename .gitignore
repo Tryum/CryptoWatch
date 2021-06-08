@@ -2,3 +2,4 @@ build
 *.db
 build-release
 crypto-watch-release-*.zip
+innosetup
