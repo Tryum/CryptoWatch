@@ -124,7 +124,7 @@ jobs:
           cmake -S ${{ env.srcDir }} -B ${{ env.buildDir }} -GNinja -DCMAKE_BUILD_TYPE=Release
           cmake --build ${{ env.buildDir }} --target all --parallel $(nproc)
           windeployqt.exe --release --qmldir .. --no-system-d3d-compiler --no-compiler-runtime --no-angle --no-opengl-sw ./${{ env.buildDir }}/${{ env.name }}.exe
-          'C:/Program Files (x86)/Inno Setup 6/ISCC.exe' ./crypto-watch.iss
+          "%programfiles(x86)%\Inno Setup 6\ISCC.exe" "./crypto-watch.iss"
           Get-PsDrive
 
       - name: Set outputs
