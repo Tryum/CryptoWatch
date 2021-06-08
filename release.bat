@@ -5,7 +5,7 @@ set WIN_DEPLOY_QT="C:/Qt/5.15.2/msvc2019_64/bin/windeployqt.exe"
 @REM https://stackoverflow.com/a/203116/8242705
 For /f "tokens=1-3 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%a-%%b)
 For /f "tokens=1-2 delims=/:" %%a in ("%TIME%") do (set mytime=%%a-%%b)
-set APP_NAME=vscode-qt-qml-vcpkg-template
+set APP_NAME=crypto-watch
 set RELEASE_NAME=%APP_NAME%-release-%mydate%_%mytime%
 
 :: make sure we found them
@@ -34,7 +34,7 @@ cmake -S %SrcDir% -B %BuildDir% -GNinja -DCMAKE_BUILD_TYPE=Release
 :: Call CMake again to build the project
 cmake --build %BuildDir%
 
-%WIN_DEPLOY_QT% --release --qmldir %SrcDir% %BuildDir%/%APP_NAME%.exe
+%WIN_DEPLOY_QT% --release --qmldir %SrcDir% --no-system-d3d-compiler --no-compiler-runtime --no-angle --no-opengl-sw %BuildDir%/bin/%APP_NAME%.exe
 
 zip -r %SrcDir%/%RELEASE_NAME%.zip . -x .\.cmake\* .\CMakeFiles\* .\cmake_install.cmake .\CMakeCache.txt .\.ninja_deps .\.ninja_log .\build.ninja .\*\*autogen*\* .\vcpkg_installed\* .\*.log .\*.manifest .\compile_commands.json
 
