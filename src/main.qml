@@ -20,6 +20,34 @@ Window {
         diffText.setDiff(diff);
     }
 
+    function checkWindowBoundaries(){
+        if(x > Screen.desktopAvailableWidth - width){
+            x = Screen.desktopAvailableWidth - width
+        }
+        else if(x < 0){
+            x = 0
+        }
+
+        if(y > Screen.desktopAvailableHeight - height){
+            y = Screen.desktopAvailableHeight - height
+        }
+        else if(y < 0){
+            y = 0
+        }
+    }
+
+    onXChanged: {
+        if(!mouseArea.pressed){
+            checkWindowBoundaries()
+        }
+    }
+
+    onYChanged: {
+        if(!mouseArea.pressed){
+            checkWindowBoundaries()
+        }
+    }
+
 
 
     Text {
@@ -77,6 +105,7 @@ Window {
         }
     }
     MouseArea {
+        id: mouseArea
         hoverEnabled: true
         anchors.fill: parent
         property real anchorX
@@ -84,6 +113,7 @@ Window {
         onPressed: { anchorX = mouse.x; anchorY = mouse.y }
         onMouseXChanged: if (pressed) app.x += mouse.x-anchorX
         onMouseYChanged: if (pressed) app.y += mouse.y-anchorY
+        onPressedChanged: if (!pressed) app.checkWindowBoundaries()
     }
 
     Settings {
