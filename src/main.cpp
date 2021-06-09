@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
             for(auto it = balances.begin(); it != balances.end(); ++it){
                 auto value = it.value().toDouble() / currencies[it.key()].toDouble();
                 sum += value;
-                qDebug() << it.key() << " : " << it.value().toDouble() << "(" << value << "EUR)";
+                qDebug() << it.key() << " : " << it.value().toDouble() << "(" << value << "EUR) [1 " + it.key() + " @ " + QString::number((1./currencies[it.key()].toDouble())) + "EUR]";
             }
             window->setProperty("balance", sum);
             qDebug() << "total : " << sum;
