@@ -8,7 +8,7 @@
       "name": "(Windows) Launch",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/crypto-watch.exe",
+      "program": "${workspaceFolder}/build/bin/crypto-watch.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
