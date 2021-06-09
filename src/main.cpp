@@ -97,11 +97,12 @@ int main(int argc, char *argv[]) {
     QTimer *balanceTimer = new QTimer(&app);
     QObject::connect(balanceTimer, &QTimer::timeout, &coinbase, &Coinbase::getAccounts);
 
-    QTimer *coinbaseGrant = new QTimer(&app);
-    QObject::connect(coinbaseGrant, &QTimer::timeout, [&](){
+    QTimer *coinbaseGrantTimer = new QTimer(&app);
+    coinbaseGrantTimer->setSingleShot(true);
+    QObject::connect(coinbaseGrantTimer, &QTimer::timeout, [&](){
         coinbase.grant();
     });
-    coinbaseGrant->start(refreshToken.isEmpty() ? 0 : 3000);
+    coinbaseGrantTimer->start(refreshToken.isEmpty() ? 0 : 3000);
 
     QObject::connect(&coinbase, &Coinbase::onAccessGranted, [&](){
         coinbase.getAccounts();
@@ -111,7 +112,7 @@ int main(int argc, char *argv[]) {
         auto refreshToken = coinbase.refreshToken();
         qDebug() << "Coinbase refresh token : " << refreshToken;
         settings.setValue(SETTINGS_COINBASE_REFRESH_TOKEN, refreshToken);
-        coinbaseGrant->stop();
+        coinbaseGrantTimer->stop();
     });
 
     
