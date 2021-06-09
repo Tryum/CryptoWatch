@@ -25,8 +25,6 @@ set BuildDir=%CD%\build-release
 :: Make the build directory if it doesn't exist
 if not exist "%BuildDir%" mkdir "%BuildDir%"
 
-:: Make sure you configure with CMake from the build directory
-cd "%BuildDir%"
 
 :: Call CMake to configure the build (generates the build scripts)
 cmake -S %SrcDir% -B %BuildDir% -GNinja -DCMAKE_BUILD_TYPE=Release
@@ -34,8 +32,12 @@ cmake -S %SrcDir% -B %BuildDir% -GNinja -DCMAKE_BUILD_TYPE=Release
 :: Call CMake again to build the project
 cmake --build %BuildDir%
 
-%WIN_DEPLOY_QT% --release --qmldir %SrcDir% --no-system-d3d-compiler --no-compiler-runtime --no-angle --no-opengl-sw %BuildDir%/bin/%APP_NAME%.exe
+%WIN_DEPLOY_QT% --release --qmldir %SrcDir% %BuildDir%/bin/%APP_NAME%.exe
 
-zip -r %SrcDir%/%RELEASE_NAME%.zip . -x .\.cmake\* .\CMakeFiles\* .\cmake_install.cmake .\CMakeCache.txt .\.ninja_deps .\.ninja_log .\build.ninja .\*\*autogen*\* .\vcpkg_installed\* .\*.log .\*.manifest .\compile_commands.json
+cd %BuildDir%
+zip -r %SrcDir%/%RELEASE_NAME%.zip . -x  \.cmake\* .\CMakeFiles\* .\cmake_install.cmake .\CMakeCache.txt .\.ninja_deps .\.ninja_log .\build.ninja .\*\*autogen*\* .\vcpkg_installed\* .\*.log .\*.manifest .\compile_commands.json
+
+cd %SrcDir%
+"%programfiles(x86)%\Inno Setup 6\iscc.exe" "./crypto-watch.iss"
 
 exit

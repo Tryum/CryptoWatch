@@ -38,9 +38,15 @@ Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
+; VC++ redistributable runtime. Extracted by VCRedistNeedsInstall(), if needed.
+Source: ".\build-release\bin\vc_redist.x64.exe"; DestDir: {tmp}; Flags: dontcopy
 Source: ".\build-release\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\build-release\bin\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".\build-release\bin\*"; DestDir: "{app}"; Excludes: "*vc_redist.x64.exe"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Run]
+Filename: "{tmp}\vc_redist.x64.exe"; StatusMsg: "{cm:InstallingVCredist}"; \
+  Parameters: "/quiet"; Check: VCRedistNeedsInstall ; Flags: waituntilterminated
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -48,4 +54,31 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+
+[CustomMessages]
+InstallingVCredist=Installing Visual C++ Redistribuable
+
+
+[Code]
+function VCRedistNeedsInstall: Boolean;
+var 
+  Version: String;
+begin
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE,
+       'SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64', 'Version', Version) then
+  begin
+    // Is the installed version at least 14.29 ? 
+    Log('VC Redist Version check : found ' + Version);
+    Result := (CompareStr(Version, 'v14.29.30037.00')<0);
+  end
+  else 
+  begin
+    // Not even an old version installed
+    Result := True;
+  end;
+  if (Result) then
+  begin
+    ExtractTemporaryFile('vc_redist.x64.exe');
+  end;
+end;
 
