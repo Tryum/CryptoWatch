@@ -123,7 +123,7 @@ jobs:
           Get-PsDrive
           cmake -S ${{ env.srcDir }} -B ${{ env.buildDir }} -GNinja -DCMAKE_BUILD_TYPE=Release
           cmake --build ${{ env.buildDir }} --target all --parallel $(nproc)
-          windeployqt.exe --release --qmldir .. --no-system-d3d-compiler --no-compiler-runtime --no-angle --no-opengl-sw ./${{ env.buildDir }}/bin/${{ env.name }}.exe
+          windeployqt.exe --release --qmldir .. --no-opengl-sw ./${{ env.buildDir }}/bin/${{ env.name }}.exe
           Get-PsDrive
 
       - name: Building the installer
