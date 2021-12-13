@@ -14,7 +14,8 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "console": "integratedTerminal",
-      "preLaunchTask": "Before Launch"
+      "preLaunchTask": "Before Launch",
+      "visualizerFile": "d:/qt5.natvis.xml"
     }
   ]
 }

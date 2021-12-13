@@ -99,7 +99,7 @@ void CoinbasePrivate::getAccounts(){
             auto jsonResponse = QJsonDocument::fromJson(response);
 
 #if ENABLE_API_RESPONSE_DUMP
-            QFile dump("accounts.json");
+            QFile dump("accounts_coinbase.json");
             dump.open(QFile::WriteOnly);
             dump.write(jsonResponse.toJson(QJsonDocument::Indented));
             dump.close();
@@ -130,7 +130,7 @@ void CoinbasePrivate::getCurrencies(){
                 auto jsonResponse = QJsonDocument::fromJson(response);
 
 #if ENABLE_API_RESPONSE_DUMP
-                QFile dump("currencies.json");
+                QFile dump("currencies_coinbase.json");
                 dump.open(QFile::WriteOnly);
                 dump.write(jsonResponse.toJson(QJsonDocument::Indented));
                 dump.close();
